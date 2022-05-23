@@ -9,7 +9,7 @@ Stata ado-file to create sankeyplot (flow-charts).
   * `BLABSIZE()`: Size of blabel-labels (default is blabsize(normal)
   * `COLORS()`: Specify colors; default are grey-tones with 80% opacity 
   * `TWOWAYoptions()`: Specify most of the usual twoway-options
-
+- Example graph:
 ![example_graph](https://user-images.githubusercontent.com/36712245/169912249-d910e199-e2c0-42f9-99f4-985c1c56588e.png)
 
 # example.do
