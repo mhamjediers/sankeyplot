@@ -1,5 +1,6 @@
 *********************************
 * Written by Maik Hamjediers 
+* sankeyplot.ado Version 0.8
 * Last update: 23.05.2022
 *********************************
 
