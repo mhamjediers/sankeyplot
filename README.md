@@ -10,7 +10,8 @@ Stata ado-file to create sankeyplot (flow-charts).
   * `COLORS()`: Specify colors; default are grey-tones with 80% opacity 
   * `TWOWAYoptions()`: Specify most of the usual twoway-options
 
-![example graph](<https://github.com/mhamjediers/sankeyplot/blob/master/example_graph.png>)
+![example_graph](https://user-images.githubusercontent.com/36712245/169912123-36b18b62-d45f-464b-aa34-bdf6ab992626.png)
 
 # example.do
 Stata-do-file with simulated examplary data and syntax
+
