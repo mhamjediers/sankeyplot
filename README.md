@@ -7,7 +7,8 @@ Stata ado-file to create sankeyplots (flow-charts).
   * `PERCent`: Relative frequencies instead of absolute number of observations 
   * `COLORS()`: Specify colors; default are grey-tones with 80% opacity 
   * `BARWIDTH()`: Width of start- and end-bars (default is barwidth(0.1))
-  * `LWDITH()`: Specify width of bars and flowing curves
+  * `BARLWDITH()`: Specify line width of bars
+  * `CURVELWDITH()`: Specify line width of flowing curves
   * `BLABEL`: Show absolute number of observations or relative frequencies as labels of start- and end-bars (default is no blabel)
   * `BLABFORMAT()`: Specify format of blabel
   * `BLABSIZE()`: Size of blabel-labels (default is blabsize(medium))
