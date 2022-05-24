@@ -1,7 +1,7 @@
 *********************************
 * Written by Maik Hamjediers 
-* sankeyplot.ado Version 0.8
-* Last update: 23.05.2022
+* sankeyplot.ado Version 0.81
+* Last update: 24.05.2022
 *********************************
 
 *any feedback/suggestions/problems is welcomed: maik.hamjediers@hu-berlin.de
@@ -9,7 +9,7 @@
 cap program drop sankeyplot
 program define sankeyplot
 version 17
-syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE(string) TWOWAYoptions(string asis)]
+syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE(string) BARWIDTH(real 0.1) TWOWAYoptions(string asis)]
 
 	quietly {
 		
@@ -113,7 +113,7 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE
 			sort xx_sorting
 			
 			*Adjusting waves in between to avoid overlap with bars
-			bys xx_grpid (xx_wave): replace xx_wave = xx_wave + (0.5 - xx_wave)/10 
+			bys xx_grpid (xx_wave): replace xx_wave = xx_wave + (0.5 - xx_wave)/(1/`barwidth')
 			expand 2 if xx_start == 1 | xx_end == 1, gen(bar)
 			replace xx_wave = 0 if xx_start == 1 & bar == 1
 			replace xx_wave = 1 if xx_end == 1 & bar == 1
@@ -180,11 +180,11 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE
 		quietly: levelsof xx_mob, local(xx_paths)
 		foreach mob of local xx_paths {
 			gettoken col colors:colors
-			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(0.1) color(`col') lwidth(thin)) "
+			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(thin)) "
 			local graph_n = `graph_n' + 1
 			local legtext`mob' : label `xx_lbe' `mob'
 			local legendlab `legendlab' `graph_n' "`legtext`mob''"
-			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(0.1) color(`col') lwidth(thin)) "
+			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(thin)) "
 			local graph_n = `graph_n' + 1
 		}
 		*Scatter-Plot (label)
