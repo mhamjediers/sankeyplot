@@ -1,6 +1,6 @@
 *********************************
 * Written by Maik Hamjediers 
-* sankeyplot.ado Version 0.821
+* sankeyplot.ado Version 0.85
 * Last update: 24.05.2022
 *********************************
 
@@ -9,12 +9,22 @@
 cap program drop sankeyplot
 program define sankeyplot
 version 17
-syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BARWIDTH(real 0.1) ///
-	BARLWDITH(string asis) CURVELWDITH(string asis) ///
-	BLABEL BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis) ///
-	TWOWAYoptions(string asis)]
+	#delimit ;
+	syntax varlist(min=2 numeric) [if] [in] , 
+	[PERCent
+	COLors(string asis) 
+	BARWIDTH(real 0.1) 
+	*
+	BARLWDITH(string asis) CURVELWDITH(string asis) 
+	BLABEL BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis)
+	]
+	;
+    #delimit cr
 
 	quietly {
+		
+		*Check if barwidth less than 0.5
+		assert `barwidth' < 0.5
 		
 		preserve 
 		
@@ -31,6 +41,9 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BARWIDTH(real 0
 			use `sankeysave', clear
 			if "`if'" != "" {
 				keep `if'
+			}	
+			if "`in'" != "" {
+				keep `in'
 			}	
 			
 			gettoken f  varlist : varlist
@@ -201,11 +214,10 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BARWIDTH(real 0
 			if "`blabcolor'"=="" {
 				local blabcolor black
 			}
-			dis in red "`blabformat'"
 			local graphs "`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_blabel) mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor')) "
 			local graph_n = `graph_n' + 1
 		}
-		twoway `graphs', `twowayoptions' legend(order(`legendlab'))
+		twoway `graphs', `options' legend(order(`legendlab'))
 		
 		restore
 	}
