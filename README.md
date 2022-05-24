@@ -1,21 +1,11 @@
-# sankeyplot.ado (Version 0.82)
-Stata ado-file to create sankeyplots (flow-charts).
-- it takes at least to categorical numerical variables in wide-format as input, but more than two are possible
-- beware of potential missing data; either omit them via an "if-specification" or code them as an additional category
-- Optional options so far:
-  * `if`
-  * `PERCent`: Relative frequencies instead of absolute number of observations 
-  * `COLORS()`: Specify colors; default are grey-tones with 80% opacity 
-  * `BARWIDTH()`: Width of start- and end-bars (default is barwidth(0.1))
-  * `BARLWDITH()`: Specify line width of bars
-  * `CURVELWDITH()`: Specify line width of flowing curves
-  * `BLABEL`: Show absolute number of observations or relative frequencies as labels of start- and end-bars (default is no blabel)
-  * `BLABFORMAT()`: Specify format of blabel
-  * `BLABSIZE()`: Size of blabel-labels (default is blabsize(medium))
-  * `BLABCOLOR()`: Specify color of blabel (default is blabcolo(black))
-  * `TWOWAYoptions()`: Specify most of the usual twoway-options
+# sankeyplot.ado (Version 0.85)
+Stata-ado-file to create a sankey diagram, which visualizes flow of the values of one variable to another. It takes two or more categorical variables that should represent the same set of values across domains (e.g., waves or generations).
+
 - Example graph:
 ![example_graph](https://user-images.githubusercontent.com/36712245/169912249-d910e199-e2c0-42f9-99f4-985c1c56588e.png)
 
-# example.do
-Stata-do-file with simulated examplary data and syntax
+# sankeyplot.sthlp
+Stata-help-file that explaines syntax, options, and provides examples of how to use sankeyplot.
+
+# sankeyplot_eg.ado
+Stata-ado-file that generates exemplary data and sankeyplots for the help-file
