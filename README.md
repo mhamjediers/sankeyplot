@@ -1,5 +1,5 @@
 # sankeyplot.ado (Version 0.8)
-Stata ado-file to create sankeyplot (flow-charts).
+Stata ado-file to create sankeyplots (flow-charts).
 - it takes at least to categorical numerical variables in wide-format as input, but more than two are possible
 - beware of potential missing data; either omit them via an "if-specification" or code them as an additional category
 - Optional options so far:
