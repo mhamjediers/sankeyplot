@@ -1,6 +1,6 @@
 *********************************
 * Written by Maik Hamjediers 
-* sankeyplot.ado Version 0.81
+* sankeyplot.ado Version 0.82
 * Last update: 24.05.2022
 *********************************
 
@@ -9,7 +9,9 @@
 cap program drop sankeyplot
 program define sankeyplot
 version 17
-syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE(string) BARWIDTH(real 0.1) TWOWAYoptions(string asis)]
+syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) LWDITH(string asis) ///
+	BLABEL BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis) BARWIDTH(real 0.1) ///
+	TWOWAYoptions(string asis)]
 
 	quietly {
 		
@@ -171,7 +173,7 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE
 			foreach w of local xx_waves {
 				levelsof xx_grpid if xx_mob == `mob' & xx_start == 1 & bar == 0 & xx_wave_int == `w', local(xx_graphs2)
 				foreach id of local xx_graphs2 {
-					local graphs "`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') lwidth(vvthin)) "
+					local graphs "`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') lwidth(`lwdith')) "
 					local graph_n = `graph_n' + 1
 				}
 		}
@@ -180,19 +182,26 @@ syntax varlist(min=2 numeric) [if], [PERCent COLors(string asis) BLABEL BLABSIZE
 		quietly: levelsof xx_mob, local(xx_paths)
 		foreach mob of local xx_paths {
 			gettoken col colors:colors
-			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(thin)) "
+			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(`lwdith')) "
 			local graph_n = `graph_n' + 1
 			local legtext`mob' : label `xx_lbe' `mob'
 			local legendlab `legendlab' `graph_n' "`legtext`mob''"
-			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(thin)) "
+			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(`lwidth')) "
 			local graph_n = `graph_n' + 1
 		}
 		*Scatter-Plot (label)
 		if "`blabel'" != "" { 
 			if "`blabsize'" == "" {
-				local blabsize normal
+				local blabsize medium
 			}
-			local graphs "`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_blabel) mlabpos(0) mlabsize(`blabsize')) "
+			if "`blabformat'"=="" {
+				local blabformat %9.2g
+			}
+			if "`blabcolor'"=="" {
+				local blabcolor black
+			}
+			dis in red "`blabformat'"
+			local graphs "`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_blabel) mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor')) "
 			local graph_n = `graph_n' + 1
 		}
 		twoway `graphs', `twowayoptions' legend(order(`legendlab'))
