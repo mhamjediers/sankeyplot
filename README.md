@@ -1,4 +1,4 @@
-# sankeyplot.ado (Version 0.85)
+# sankeyplot.ado (Version 1.0)
 Stata-ado-file to create a sankey diagram, which visualizes flow of the values of one variable to another. It takes two or more categorical variables that should represent the same set of values across domains (e.g., waves or generations).
 
 - Example graph:
