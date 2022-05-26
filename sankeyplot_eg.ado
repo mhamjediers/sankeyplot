@@ -31,7 +31,7 @@ args ex
 	}
 	*Long
 	if `ex' == 3 {
-		reshape edu_, i(id) j(wave)
+		reshape long edu_, i(id) j(wave)
 		sankeyplot edu_ id wave , long
 	}
 end 

@@ -100,7 +100,7 @@ version 15
 				count 
 				replace xx_obs = xx_obs / `r(N)' * 100
 				if "`blabel'" != "" {
-					for any xx_blabel0 xx_blabel1 xx_blabpos1 xx_blabpos0: replace X = X /  `r(N)' * 100
+					for any xx_vallabel0 xx_vallabel1 xx_blabpos1 xx_blabpos0: replace X = X /  `r(N)' * 100
 				}
 			}
 
@@ -196,6 +196,7 @@ version 15
 		
 			
 		***** Drawing the Graph
+		gr_setscheme
 		
 		*Color-Local
 		if "`colors'" != "" { // filling up, if not enough specified
@@ -223,7 +224,6 @@ version 15
 		if "`flowcolors'" == "" {
 			local flowcolors "`colors'"
 		}
-		
 		
 		local xx_lbe : value label xx_mob
 		

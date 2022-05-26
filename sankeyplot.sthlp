@@ -120,8 +120,7 @@ If the data that should be plotted is in the long format (obsverations represent
 {pstd}Plotting more than two variables {p_end}
 {phang2}{cmd:. {stata "sankeyplot edu_0 edu_1 edu_2"}}{p_end}
 
-{pstd}Plot if data is in long format ({stata "sankeyplot_eg 3":{it:click to run}}) {p_end}
-{phang2}{cmd:. reshape edu_, i(id) j(wave)}{p_end}
+{pstd}If data is in long format ({stata "sankeyplot_eg 3":{it:click to run}}) {p_end}
 {phang2}{cmd:. sankeyplot edu_ id wave, long}{p_end}
 
 {title:Acknowledgements}
