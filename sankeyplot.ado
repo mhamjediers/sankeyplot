@@ -1,22 +1,17 @@
-*********************************
-* Written by Maik Hamjediers 
-* sankeyplot.ado Version 0.85
-* Last update: 24.05.2022
-*********************************
-
-*any feedback/suggestions/problems is welcomed: maik.hamjediers@hu-berlin.de
+*! version 1.0  26may2022  Maik Hamjediers
 
 cap program drop sankeyplot
 program define sankeyplot
-version 17
+version 15
 	#delimit ;
 	syntax varlist(min=2 numeric) [if] [in] , 
-	[PERCent
-	COLors(string asis) 
-	BARWIDTH(real 0.1) 
+	[PERCent 
+	LONG
+	COLors(string asis) FLOWCOLors(string asis) OPACity(real 80) 
+	BARWidth(real 0.1) 
 	*
-	BARLWDITH(string asis) CURVELWDITH(string asis) 
-	BLABEL BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis)
+	BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis)
+	FLOWOPTions(string asis) BAROPTions(string asis)
 	]
 	;
     #delimit cr
@@ -24,9 +19,36 @@ version 17
 	quietly {
 		
 		*Check if barwidth less than 0.5
-		assert `barwidth' < 0.5
+		if `barwidth' >= 0.5 {
+			dis in red "option barwidth() incorrectly specified; needs to by smaller than 0.5"
+			error 198
+		}
 		
 		preserve 
+		
+		if "`if'" != "" {
+			keep `if'
+		}	
+		if "`in'" != "" {
+			keep `in'
+		}	
+		
+		keep `varlist'
+		
+		*Check if three variables are definied when using the option long
+		local n_vars : list sizeof local(varlist)
+		if "`long'" != "" & `n_vars' < 3 {
+			error 102
+		}
+		if "`long'" != "" & `n_vars' > 3 {
+			error 103
+		}
+		if "`long'" != "" & `n_vars' == 3 {
+			tokenize `varlist' 
+			reshape wide `1', i(`2') j(`3')
+			unab varlist: _all
+			local varlist: list varlist - 2
+		}
 		
 		tempfile sankeysave 
 		save `sankeysave', replace
@@ -39,12 +61,7 @@ version 17
 			local wave_file = `wave_file' + 1
 			
 			use `sankeysave', clear
-			if "`if'" != "" {
-				keep `if'
-			}	
-			if "`in'" != "" {
-				keep `in'
-			}	
+			
 			
 			gettoken f  varlist : varlist
 			clonevar xx_mob0 = `f'
@@ -54,15 +71,30 @@ version 17
 			bys xx_mob0 xx_mob1: gen xx_obs = _N
 			
 			if "`blabel'" != "" {
+				*check if either catlabel or vallabel
+				if "`blabel'" != "catlabel" & "`blabel'" != "vallabel" {
+					dis in red `""option blabel must be either "catlabel" or "vallabel""'
+					error 198
+				}
 				foreach w of num 0 1 {
 					sort xx_mob`w'
 					gen xx_n = _n
 					bys xx_mob`w' : egen xx_blabpos`w' = mean(xx_n)
-					bys xx_mob`w' : gen xx_blabel`w' = _N
+					*Value label
+					bys xx_mob`w' : gen xx_vallabel`w' = _N
+					*Category label
+					gen xx_catlabel`w' = ""
+					levelsof xx_mob`w', local(xx_paths)
+					local xx_lbe : value label xx_mob`w'
+					foreach mob of local xx_paths {
+						local labtext`mob' : label `xx_lbe' `mob'
+						replace xx_catlabel`w' = "`labtext`mob''" if xx_mob`w' == `mob'
+					}
 					drop xx_n
 				}
-				local blabel xx_blabel xx_blabpos
+					local blabel_vars xx_blabpos xx_vallabel xx_catlabel
 			}
+			
 			
 			if "`percent'" != "" {
 				count 
@@ -89,7 +121,7 @@ version 17
 
 			gen xx_grpid = _n
 
-			reshape long xx_mob xx_grp xx_grpl `blabel', i(xx_grpid) j(xx_wave)
+			reshape long xx_mob xx_grp xx_grpl `blabel_vars', i(xx_grpid) j(xx_wave)
 
 			sort xx_grpid xx_wave
 
@@ -143,7 +175,6 @@ version 17
 			local var_waves : list sizeof local(varlist)
 		}
 		
-		
 		use `1', clear
 		gen xx_wave_int = 1
 		*Append potentially multiple waves
@@ -161,46 +192,65 @@ version 17
 		}
 		
 		sort xx_wave_int xx_sorting
+		lab var xx_wave "Domain"
+		
 			
 		***** Drawing the Graph
 		
 		*Color-Local
-		if "`colors'" == "" {
-			quietly: tab xx_mob
-			local grey_levels = `r(r)'
-			local greys = round(13/`grey_levels',1)
-			foreach num of numlist 2 (`greys') 13 {
-				local colors = "`colors' gs`num'%80"
+		if "`colors'" != "" { // filling up, if not enough specified
+			local n_col : list sizeof local(colors)
+			local n_col = `n_col' + 1
+			levelsof xx_mob
+			foreach c of numlist `n_col' (1) `r(r)' {
+				local colors = "`colors' `.__SCHEME.color.p`c''%`opacity'"
 			}
 		}
+		if "`colors'" == "" {
+			levelsof xx_mob
+			foreach c of numlist 1 (1) `r(r)' {
+				local colors = "`colors' `.__SCHEME.color.p`c''%`opacity'"
+			}
+		}
+		if "`flowcolors'" != "" { // filling up, if not enough specified
+			local n_col : list sizeof local(flowcolors)
+			local n_col = `n_col' + 1
+			levelsof xx_mob
+			foreach c of numlist `n_col' (1) `r(r)' {
+				local flowcolors = "`flowcolors' `.__SCHEME.color.p`c''%`opacity'"
+			}
+		}
+		if "`flowcolors'" == "" {
+			local flowcolors "`colors'"
+		}
+		
 		
 		local xx_lbe : value label xx_mob
 		
 		local graph_n = 0
 		*Range-Plots
 		local graphs ""
-		local color1 = "`colors'"
 		quietly: levelsof xx_mob, local(xx_paths)
 		foreach mob of local xx_paths {
-			quietly: gettoken col color1:color1
+			quietly: gettoken col flowcolors:flowcolors
 			levelsof xx_wave_int, local(xx_waves)
 			foreach w of local xx_waves {
 				levelsof xx_grpid if xx_mob == `mob' & xx_start == 1 & bar == 0 & xx_wave_int == `w', local(xx_graphs2)
 				foreach id of local xx_graphs2 {
-					local graphs "`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') lwidth(`curvelwdith')) "
+					local graphs "`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') `flowoptions' ) "
 					local graph_n = `graph_n' + 1
 				}
-		}
+			}
 		}
 		*Bar-Plots
 		quietly: levelsof xx_mob, local(xx_paths)
 		foreach mob of local xx_paths {
 			gettoken col colors:colors
-			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(`barlwdith')) "
+			local graphs "`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "
 			local graph_n = `graph_n' + 1
 			local legtext`mob' : label `xx_lbe' `mob'
 			local legendlab `legendlab' `graph_n' "`legtext`mob''"
-			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') lwidth(`barlwidth')) "
+			local graphs "`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "
 			local graph_n = `graph_n' + 1
 		}
 		*Scatter-Plot (label)
@@ -214,7 +264,7 @@ version 17
 			if "`blabcolor'"=="" {
 				local blabcolor black
 			}
-			local graphs "`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_blabel) mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor')) "
+			local graphs "`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_`blabel') mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor')) "
 			local graph_n = `graph_n' + 1
 		}
 		twoway `graphs', `options' legend(order(`legendlab'))

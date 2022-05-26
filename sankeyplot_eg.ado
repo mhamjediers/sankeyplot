@@ -1,8 +1,5 @@
-*******************************************
-** Examples for sankeyplot.ado
-* Written by Maik Hamjediers
-* Last Update: 24.05.2022
-*******************************************
+*! version 1.0  26may2022  Maik Hamjediers
+*! Examples for sankeyplot.ado
 
 program define sankeyplot_eg
 args ex
@@ -10,6 +7,7 @@ args ex
     if `ex' == 1 {
 		clear
 		set obs 987
+		gen id = _n
 		gen edu_0 = _n <= 500
 		replace edu_0 = 2 if _n > 900
 		gen edu_1 = runiformint(0,2)
@@ -23,12 +21,18 @@ args ex
 	}
 	*Plot with options
 	if `ex' == 2 {
-		sankeyplot edu_0 edu_1, percent blabel blabformat(%3.1g) ///
-			colors(gs6%50 gs10%50 gs14%50) ///
+		sankeyplot edu_0 edu_1, percent ///
+			blabel(vallabel) blabformat(%3.1g) ///
+			colors(gs6%70 gs10%70 gs14%70) ///
 			legend(r(1) symx(*0.5) region(lc(white))) ///
 			xlabel(0 "1st Gen." 1 "2nd Gen.") xtitle("") ///
 			ylabel(,angle(0)) ytitle("Relative Frequencies") xsize(7)  ///
 			title("Educational Mobility Across Generations")
+	}
+	*Long
+	if `ex' == 3 {
+		reshape edu_, i(id) j(wave)
+		sankeyplot edu_ id wave , long
 	}
 end 
 
