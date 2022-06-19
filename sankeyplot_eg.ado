@@ -1,4 +1,4 @@
-*! version 1.0  26may2022  Maik Hamjediers
+*! version 1.0  16june2022  Maik Hamjediers
 *! Examples for sankeyplot.ado
 
 program define sankeyplot_eg

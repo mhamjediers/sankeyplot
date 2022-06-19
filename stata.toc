@@ -1,8 +1,0 @@
-v 0.85
-d Materials by Maik Hamjediers
-d Humboldt-Universität zu Berlin
-d maik.hamjediers@hu-berlin.de
-
-d 'sankeyplot': Creating sankey diagramms for visualizing flow between two or more domains of
-
-p sankeyplot
