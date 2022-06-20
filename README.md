@@ -1,3 +1,5 @@
+![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/mhamjediers/sankeyplot) ![license](https://img.shields.io/github/license/mhamjediers/sankeyplot) ![Stars](https://img.shields.io/github/stars/mhamjediers/sankeyplot) ![version](https://img.shields.io/github/v/release/mhamjediers/sankeyplot) 
+
 ## sankeyplot, version 1.0
 
 Stata module to create Sankey digramms
