@@ -7,9 +7,10 @@ Stata module to create Sankey digramms
 Download module in Stata:
 > ssc install sankeyplot
 
-Example graph:
-![example_graph](https://user-images.githubusercontent.com/36712245/169912249-d910e199-e2c0-42f9-99f4-985c1c56588e.png)
-
+Exemplary graphs:
+![UKvote_onlylabour](https://user-images.githubusercontent.com/36712245/174764980-baf5a813-1e35-4eb6-8f36-668882c37869.png)
+![edumobility](https://user-images.githubusercontent.com/36712245/174764999-9adb189d-e441-4534-afff-5df9d2a89d67.png)
+![panelattrition](https://user-images.githubusercontent.com/36712245/174765004-178544f0-e2d2-42b8-bfa1-a2fc6db6d395.png)
 
 ## Description
 'sankeyplot' creates a sankey diagram, which visualizes flow of the values of one variable to another. 
