@@ -9,9 +9,9 @@ Download module in Stata:
 
 Exemplary graphs:
 
-<img src="https://user-images.githubusercontent.com/36712245/174764980-baf5a813-1e35-4eb6-8f36-668882c37869.png"  width="200" height="400" />
-![edumobility](https://user-images.githubusercontent.com/36712245/174764999-9adb189d-e441-4534-afff-5df9d2a89d67.png)
-![panelattrition](https://user-images.githubusercontent.com/36712245/174765004-178544f0-e2d2-42b8-bfa1-a2fc6db6d395.png)
+<img src="https://user-images.githubusercontent.com/36712245/174764980-baf5a813-1e35-4eb6-8f36-668882c37869.png"  width="600" height="400" />
+<img src="https://user-images.githubusercontent.com/36712245/174764999-9adb189d-e441-4534-afff-5df9d2a89d67.png"  width="600" height="342" />
+<img src="https://user-images.githubusercontent.com/36712245/174765004-178544f0-e2d2-42b8-bfa1-a2fc6db6d395.png"  width="600" height="300" />
 
 ## Description
 'sankeyplot' creates a sankey diagram, which visualizes flow of the values of one variable to another. 
