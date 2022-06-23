@@ -12,8 +12,8 @@ version 15
         COLors(string asis) FLOWCOLors(string asis) OPACity(real 80) 
         BARWidth(real 0.1) 
         *
-        BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis)
-        FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLOR(string asis)
+        BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis) BLABANGLE(string asis)
+        FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLOR(string asis) FLOWLABANGLE(string asis) 
         FLOWOPTions(string asis) BAROPTions(string asis)
         ]
         ;
@@ -342,7 +342,10 @@ version 15
                         if "`blabcolor'"=="" {
                                 local blabcolor black
                         }
-                        local graphs `"`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_`blabel') mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor')) "'
+						if "`blabangle'"=="" {
+                                local blabangle 0
+                        }
+                        local graphs `"`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_`blabel') mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor') mlabangle(`blabangle')) "'
                         local graph_n = `graph_n' + 1
                 }
                 *flowlabel
@@ -362,7 +365,10 @@ version 15
                         if "`flowlabel'" == "right" {
                                 local mlabpos "left"
                         }
-                        local graphs `"`graphs' (scatter xx_flowlabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar != 1, m(none) mlabel(xx_flowlab) mlabpos(`mlabpos') mlabformat(`flowlabformat') mlabsize(`flowlabsize') mlabcolor(`flowlabcolor')) "'
+						if "`flowlabangle'"=="" {
+                                local flowlabangle 0
+                        }
+                        local graphs `"`graphs' (scatter xx_flowlabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar != 1, m(none) mlabel(xx_flowlab) mlabpos(`mlabpos') mlabformat(`flowlabformat') mlabsize(`flowlabsize') mlabcolor(`flowlabcolor') mlabangle(`flowlabangle')) "'
                         local graph_n = `graph_n' + 1
                 }
                 
