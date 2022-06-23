@@ -16,6 +16,7 @@ version 15
         BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis) BLABANGLE(string asis)
         FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLOR(string asis) FLOWLABANGLE(string asis) 
         FLOWOPTions(string asis) BAROPTions(string asis)
+		LEGend(string asis)
         ]
         ;
     #delimit cr
@@ -24,7 +25,13 @@ version 15
                 
                 *Check if barwidth less than 0.5
                 if `barwidth' >= 0.5 {
-                        dis in red "option barwidth() incorrectly specified; needs to by smaller than 0.5"
+                        dis in red "option barwidth() incorrectly specified; needs to be smaller than 0.5"
+                        error 198
+                }
+				
+				 *Check if points at least 2
+                if `points' < 2 {
+                        dis in red "option points() incorrectly specified; needs to be an integer larger than 1"
                         error 198
                 }
                 
@@ -289,9 +296,41 @@ version 15
                 }
                 
                 local graph_n = 0
-
-                *Range-Plots
                 local graphs ""
+				local copy_colors `colors'
+				*Starting-Bars (guiding the legend)
+                quietly: levelsof xx_mob, local(xx_paths)
+                foreach mob of local xx_paths {
+                        gettoken col colors:colors, 
+						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
+							tokenize `col'
+							local col `""`1' `2' `3'%`opacity'""'
+						}
+						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
+                        local graph_n = `graph_n' + 1        
+						local xx_lbe : value label xx_mob
+						if "`xx_lbe'" != "" {
+                                local legtext`mob' : label `xx_lbe' `mob'
+                                local legendlab `graph_n' "`legtext`mob''" `legendlab' 
+                        }
+                        else {
+                                local legendlab `graph_n' "`mob'" `legendlab' 
+                        }
+                }
+				
+				*End-Bars
+				quietly: levelsof xx_mob, local(xx_paths)
+                foreach mob of local xx_paths {
+                    gettoken col copy_colors:copy_colors, 
+					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
+						tokenize `col'
+						local col `""`1' `2' `3'%`opacity'""'
+					}
+					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
+                    local graph_n = `graph_n' + 1
+				}
+				
+                *Range-Plots
                 quietly: levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
                         quietly: gettoken col flowcolors:flowcolors, 
@@ -307,29 +346,6 @@ version 15
                                         local graph_n = `graph_n' + 1
                                 }
                         }
-                }
-                *Bar-Plots
-                quietly: levelsof xx_mob, local(xx_paths)
-                foreach mob of local xx_paths {
-                        gettoken col colors:colors, 
-						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-							tokenize `col'
-							local col `""`1' `2' `3'%`opacity'""'
-						}
-						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
-                        local graph_n = `graph_n' + 1
-                        local xx_lbe : value label xx_mob
-                        if "`xx_lbe'" != "" {
-                                local legtext`mob' : label `xx_lbe' `mob'
-                                local legendlab `graph_n' "`legtext`mob''" `legendlab' 
-                        }
-                        else {
-                                local legendlab `graph_n' "`mob'" `legendlab' 
-
-                        }
-                        
-                        local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
-                        local graph_n = `graph_n' + 1
                 }
                 *Scatter-Plot (label)
                 *blabel
@@ -374,12 +390,24 @@ version 15
                 }
                 
                 *xlabel
-                if regexm(`"`options'"', "xlabel") == 0 {
+                if ustrregexm(`"`options'"', "xlabel") == 0 {
                         levelsof xx_wave if bar == 1, local(xlabel)
                         local options `options' xlabel(`xlabel')
                 }
                 
-                twoway `graphs', `options' legend(order(`legendlab')) 
+				*Legend (check if order is specified or not)
+				if "`legend'" == "" {
+					twoway `graphs', `options' legend(order(`legendlab')) 
+				}
+				
+				if ustrregexm(`"`legend'"', "order\(") == 0 {
+					twoway `graphs', `options' legend(`legend' order(`legendlab'))
+				}
+				if ustrregexm(`"`legend'"', "order\(") == 1 {
+					twoway `graphs', `options' legend(`legend')
+				}
+				
+                
                 
                 restore
         }
