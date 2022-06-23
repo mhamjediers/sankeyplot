@@ -31,6 +31,7 @@ help for {hi:sankeyplot}
 {synoptline}
 {syntab :Options}
 {synopt :{cmdab:perc:ent}}relative frequencies instead of absolute number of observations{p_end}{...}
+{synopt :{cmdab:p:oints(}#{cmdab:)}}draw flows via # points between bars (deafult is points(10)){p_end}{...}
 {synopt :{cmdab:miss:ing}}plot missing values of {it:varlist} (default is to omit them){p_end}{...}
 {synopt :{cmdab:force}}generate graph although variables in {it:varlist} have many levels {p_end}{...}
 {synopt :{cmdab:barw:idth(}#{cmdab:)}}width of bars (default is barwidth(0.1)){p_end}{...}
@@ -76,6 +77,8 @@ Altough it is most common to visualize flows among variables with the same set o
 
 {phang}
 {cmd:percent} specifies to plot the relative frequencies of the levels of the plotted variables. The default is to plot absolute frequencies.
+
+{cmd:points(}{it:#}{cmd:)} specifies the number of points between bars through which the flows are drawn. The default are 10 points, with a larger number increasing the smoothness and computational time.
 
 {phang}
 {cmd:missing} specifies to plot missing values in {it:varlist} as well. The default is to disregard them. Note that missing values can lead to an imbalance between start and end bars or they produce flows into empty bars. Instead of using {cmd:missing}, rather code missing values as distinct values in the underyling variables.
