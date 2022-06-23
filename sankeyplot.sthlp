@@ -63,13 +63,16 @@ help for {hi:sankeyplot}
 {marker description}{...}
 {title:Description}
 
-
+{pstd}
 {hi:sankeyplot} creates a sankey diagram, which visualizes flow of the values of one variable to another. 
 
+{pstd}
 In the default setting, the command assumes that the data is given in a wide format (each variable presents a domain). The command takes two or more categorical variables as input, which should represent the same set of values across domains (e.g., waves or generations).
 
+{pstd}
 If the data that should be plotted is in a long format (obsverations represent domains), specify the {cmd:long}-option and three variables as the input: the categorical variable that should be plotted, an identifier of the clusters (e.g., pid), and a domain variable (e.g., wave).
 
+{pstd}
 Altough it is most common to visualize flows among variables with the same set of values, specifying two different set of values is also possible. Yet, note that the legend and colors will be based on the variable mentioned first in {it:varlist}. If two different variables are used it is recommended to use the options {cmd:blabel(catlabel)} and {cmd:legend(off)}.
 
 {marker comopt}{...}

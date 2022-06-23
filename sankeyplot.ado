@@ -22,7 +22,7 @@ version 15
     #delimit cr
 
         quietly {
-                
+				
                 *Check if barwidth less than 0.5
                 if `barwidth' >= 0.5 {
                         dis in red "option barwidth() incorrectly specified; needs to be smaller than 0.5"
@@ -143,7 +143,7 @@ version 15
                                         local xx_lbe : value label xx_mob`w'
                                         foreach mob of local xx_paths {
                                                 local labtext`mob' : label `xx_lbe' `mob'
-                                                replace xx_catlabel`w' = "`labtext`mob''" if xx_mob`w' == `mob'
+                                                replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
                                         }
                                         drop xx_n
                                 }
@@ -299,19 +299,22 @@ version 15
                 local graphs ""
 				local copy_colors `colors'
 				*Starting-Bars (guiding the legend)
-                quietly: levelsof xx_mob, local(xx_paths)
+                levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
                         gettoken col colors:colors, 
+						if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+							local col "`col'%`opacity'"
+						}
 						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 							tokenize `col'
 							local col `""`1' `2' `3'%`opacity'""'
 						}
-						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
+						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
                         local graph_n = `graph_n' + 1        
 						local xx_lbe : value label xx_mob
 						if "`xx_lbe'" != "" {
                                 local legtext`mob' : label `xx_lbe' `mob'
-                                local legendlab `graph_n' "`legtext`mob''" `legendlab' 
+                                local legendlab `graph_n' `"`legtext`mob''"' `legendlab' 
                         }
                         else {
                                 local legendlab `graph_n' "`mob'" `legendlab' 
@@ -319,33 +322,41 @@ version 15
                 }
 				
 				*End-Bars
-				quietly: levelsof xx_mob, local(xx_paths)
+				levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
                     gettoken col copy_colors:copy_colors, 
+					if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+						local col "`col'%`opacity'"
+					}
 					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 						tokenize `col'
 						local col `""`1' `2' `3'%`opacity'""'
 					}
-					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col'%`opacity') `baroptions' ) "'
+					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
                     local graph_n = `graph_n' + 1
 				}
 				
                 *Range-Plots
-                quietly: levelsof xx_mob, local(xx_paths)
+                levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
-                        quietly: gettoken col flowcolors:flowcolors, 
-						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-							tokenize `col'
-							local col `""`1' `2' `3'%`opacity'""'
+                        gettoken col flowcolors:flowcolors, 
+						if "`col'" != "none" {
+							if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+								local col "`col'%`opacity'"
+							}
+							if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
+								tokenize `col'
+								local col `""`1' `2' `3'%`opacity'""'
+							}
+							levelsof xx_wave_int, local(xx_waves)
+							foreach w of local xx_waves {
+									levelsof xx_grpid if xx_mob == `mob' & xx_start == 1 & bar == 0 & xx_wave_int == `w', local(xx_graphs2)
+									foreach id of local xx_graphs2 {
+											local graphs `"`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') `flowoptions' ) "'
+											local graph_n = `graph_n' + 1
+									}
+							}
 						}
-                        levelsof xx_wave_int, local(xx_waves)
-                        foreach w of local xx_waves {
-                                levelsof xx_grpid if xx_mob == `mob' & xx_start == 1 & bar == 0 & xx_wave_int == `w', local(xx_graphs2)
-                                foreach id of local xx_graphs2 {
-                                        local graphs `"`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col'%`opacity') `flowoptions' ) "'
-                                        local graph_n = `graph_n' + 1
-                                }
-                        }
                 }
                 *Scatter-Plot (label)
                 *blabel
@@ -396,19 +407,19 @@ version 15
                 }
                 
 				*Legend (check if order is specified or not)
-				if "`legend'" == "" {
+				if `"`legend'"' == "" {
 					twoway `graphs', `options' legend(order(`legendlab')) 
 				}
-				
 				if ustrregexm(`"`legend'"', "order\(") == 0 {
 					twoway `graphs', `options' legend(`legend' order(`legendlab'))
 				}
 				if ustrregexm(`"`legend'"', "order\(") == 1 {
 					twoway `graphs', `options' legend(`legend')
 				}
+				if ustrregexm(`"`legend'"', "label\(") == 1 {
+					noisily: dis as text `"(note:  legend(label()) option is not applied; use legend(order(# "text")) instead)"'
+				}	
 				
-                
-                
                 restore
         }
 
