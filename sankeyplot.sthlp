@@ -61,13 +61,13 @@ help for {hi:sankeyplot}
 {title:Description}
 
 
-{hi:sankeyplot} creates a sankey diagram, which visualizes flow of the values of {break}  one variable to another. 
+{hi:sankeyplot} creates a sankey diagram, which visualizes flow of the values of one variable to another. 
 
-In the default setting, the command assumes that the data is given in a wide format  {break} (each variable presents a domain). The command takes two or more categorical {break} variables as input, which should represent the same set of values {break} across domains (e.g., waves or generations).
+In the default setting, the command assumes that the data is given in a wide format (each variable presents a domain). The command takes two or more categorical variables as input, which should represent the same set of values across domains (e.g., waves or generations).
 
-If the data that should be plotted is in a long format (obsverations represent {break} domains), specify the {cmd:long}-option and three variables as the input: {break} the categorical variable that should be plotted, an identifier {break} of the clusters (e.g., pid), and a domain variable (e.g., wave).
+If the data that should be plotted is in a long format (obsverations represent domains), specify the {cmd:long}-option and three variables as the input: the categorical variable that should be plotted, an identifier of the clusters (e.g., pid), and a domain variable (e.g., wave).
 
-Altough it is most common to visualize flows among variables with the same set of {break} values, specifying two different set of values is also possible. Yet, note {break} that the legend and colors will be based on the variable mentioned {break} first in {it:varlist}. If two different variables are used it is recommended to {break} use the options {cmd:blabel(catlabel)} and {cmd:legend(off)}.
+Altough it is most common to visualize flows among variables with the same set of {break} values, specifying two different set of values is also possible. Yet, note that the legend and colors will be based on the variable mentioned first in {it:varlist}. If two different variables are used it is recommended to use the options {cmd:blabel(catlabel)} and {cmd:legend(off)}.
 
 {marker comopt}{...}
 {title:Options}
