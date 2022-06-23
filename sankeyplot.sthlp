@@ -44,12 +44,14 @@ help for {hi:sankeyplot}
 {synopt :{cmdab:blabel(vallabel|catlabel)}}adds labels to bars{p_end}{...}
 {synopt :{cmdab:blabsize(}{help textsizestyle}{cmdab:)}}barlabels: size of text{p_end}{...}
 {synopt :{cmdab:blabcolor(}{help colorstyle}{cmdab:)}}barlabels: color and opacity of text{p_end}{...}
+{synopt :{cmdab:blabangle(}{help anglestyle}list{cmd:)}}barlabels: angle of label {p_end}{...}
 {synopt :{cmdab:blabformat(}{help %fmt}{cmd:)}}barlabels: format label values per %fmt{p_end}{...}
 
      {it:Flow labels}
 {synopt :{cmdab:flowlabel(left|right)}}adds labels to flows{p_end}{...}
 {synopt :{cmdab:flowlabsize(}{help textsizestyle}{cmdab:)}}flowlabels: size of text{p_end}{...}
 {synopt :{cmdab:flowlabcolor(}{help colorstyle}{cmdab:)}}flowlabels: color and opacity of text{p_end}{...}
+{synopt :{cmdab:flowlabangle(}{help anglestyle}list{cmd:)}}flowlabels: angle of label {p_end}{...}
 {synopt :{cmdab:flowlabformat(}{help %fmt}{cmd:)}}flowlabels: format label values per %fmt{p_end}{...}
 
 {synopt :{it:twoway_options}}Any options documented in  {manhelpi twoway_options G-3}{p_end}{...}
@@ -67,7 +69,7 @@ In the default setting, the command assumes that the data is given in a wide for
 
 If the data that should be plotted is in a long format (obsverations represent domains), specify the {cmd:long}-option and three variables as the input: the categorical variable that should be plotted, an identifier of the clusters (e.g., pid), and a domain variable (e.g., wave).
 
-Altough it is most common to visualize flows among variables with the same set of {break} values, specifying two different set of values is also possible. Yet, note that the legend and colors will be based on the variable mentioned first in {it:varlist}. If two different variables are used it is recommended to use the options {cmd:blabel(catlabel)} and {cmd:legend(off)}.
+Altough it is most common to visualize flows among variables with the same set of values, specifying two different set of values is also possible. Yet, note that the legend and colors will be based on the variable mentioned first in {it:varlist}. If two different variables are used it is recommended to use the options {cmd:blabel(catlabel)} and {cmd:legend(off)}.
 
 {marker comopt}{...}
 {title:Options}
@@ -100,12 +102,14 @@ Altough it is most common to visualize flows among variables with the same set o
 {cmd:flowoptions(}{it:area_options}{cmd:)} allows most of the {help area_options} to change the look of the flows. Note that any specified option in {cmd:flowoptions()} affect all flows; specifying for instance {cmd:flowoptions(color(navy))} overrides any specification of the above options {cmd:colors()} and {cmd:flowcolors()} and depicts all flows in {it:navy}.
 
 {phang}
-{cmd:blabel(vallabel|catlabel)} adds either value-labels or the labels of the plotted categories to all bars. If {cmd:vallabel} and {cmd:percent} are specified, relative frequencies are presented in the bars; otherwise {cmd:vallabel} shows absolute frequencies. {break}
-{cmd:blabformat({it:%fmt})}, {cmd:blabsize({it:textsizestyle})}, and {cmd:blabcolor({it:colorstyle})} specify details about how the bar labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
+{cmd:blabel(vallabel|catlabel)} adds either value-labels or the labels of the plotted categories to all bars. If {cmd:vallabel} and {cmd:percent} are specified, relative frequencies are presented in the bars; otherwise {cmd:vallabel} shows absolute frequencies. 
+{break}
+{cmd:blabformat({it:%fmt})}, {cmd:blabsize({it:textsizestyle})}, {cmd:blabangle({it:anglestyle})}, and {cmd:blabcolor({it:colorstyle})} specify details about how the bar labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
 
 {phang}
-{cmd:flowlabel(left|right)} adds value-labels at the start or end of all flows. If {cmd:flowlabel()} and {cmd:percent} are specified, relative frequencies are presented in the flows; otherwise {cmd:flowlabel()} shows absolute frequencies. {break}
-{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
+{cmd:flowlabel(left|right)} adds value-labels at the start or end of all flows. If {cmd:flowlabel()} and {cmd:percent} are specified, relative frequencies are presented in the flows; otherwise {cmd:flowlabel()} shows absolute frequencies. 
+{break}
+{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, {cmd:flowlabangle({it:anglestyle})} and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
 
 {phang}
 {it:twoway_options} allows for the inclusion of any additional {help twoway_options:graphing options} such as titles, axes, added lines, etc.
