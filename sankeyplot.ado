@@ -364,7 +364,7 @@ version 15
 		}
 		
 		*xlabel
-		if regexm("`options'", "xlabel") == 0 {
+		if regexm(`"`options'"', "xlabel") == 0 {
 			levelsof xx_wave if bar == 1, local(xlabel)
 			local options `options' xlabel(`xlabel')
 		}
