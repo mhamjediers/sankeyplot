@@ -6,6 +6,7 @@ version 15
         #delimit ;
         syntax varlist(min=2 numeric) [if] [in] , 
         [PERCent 
+		Points(integer 10)
         MISSing
         FORCE
         LONG
@@ -179,9 +180,9 @@ version 15
                         *Making Curves in between
                         bys xx_grpid (xx_wave): gen xx_diff = xx_grp[_n+1] - xx_grp if xx_grp[_n+1] != . //difference from starting to end point
                         gen xx_sorting = _n
-                        expand 10 if xx_diff != 0 & xx_diff != . //10 Points for the curves
+                        expand `points' if xx_diff != 0 & xx_diff != . //10 Points for the curves
                         sort xx_sorting
-                        replace xx_wave = xx_wave[_n-1] + 0.1 if xx_sorting == xx_sorting[_n-1]
+                        replace xx_wave = xx_wave[_n-1] + (1/`points') if xx_sorting == xx_sorting[_n-1]
                         replace xx_diff = . if xx_wave == 0
                         replace xx_diff = xx_diff * 1/(1+exp(-((xx_wave)-0.5) * 10)) //curve-function
 
@@ -203,7 +204,7 @@ version 15
                         sort xx_sorting
                         
                         *Adjusting the starting and end-point of the waves with respect to the barwidth
-                        bys xx_grpid (xx_wave): replace xx_wave = xx_wave + (0.5 - xx_wave)/(1/`barwidth')
+                        bys xx_grpid (xx_wave): replace xx_wave = xx_wave + ((`points'/2)/`points' - xx_wave)/(1/`barwidth')
                         expand 2 if xx_start == 1 | xx_end == 1, gen(bar)
                         replace xx_wave = 0 if xx_start == 1 & bar == 1
                         replace xx_wave = 1 if xx_end == 1 & bar == 1
