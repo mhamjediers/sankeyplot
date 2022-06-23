@@ -78,6 +78,7 @@ Altough it is most common to visualize flows among variables with the same set o
 {phang}
 {cmd:percent} specifies to plot the relative frequencies of the levels of the plotted variables. The default is to plot absolute frequencies.
 
+{phang}
 {cmd:points(}{it:#}{cmd:)} specifies the number of points between bars through which the flows are drawn. The default are 10 points, with a larger number increasing the smoothness and computational time.
 
 {phang}
