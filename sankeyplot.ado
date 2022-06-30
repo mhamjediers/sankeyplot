@@ -13,8 +13,8 @@ version 15
         COLors(string asis) FLOWCOLors(string asis) OPACity(real 80) 
         BARWidth(real 0.1) 
         *
-        BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLOR(string asis) BLABANGLE(string asis)
-        FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLOR(string asis) FLOWLABANGLE(string asis) 
+        BLABEL(string) BLABSIZE(string) BLABFORMAT(string asis) BLABCOLor(string asis) BLABORIENTation(string asis)
+        FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLor(string asis) FLOWLABORIENTation(string asis) 
         FLOWOPTions(string asis) BAROPTions(string asis)
 		LEGend(string asis)
         ]
@@ -257,6 +257,7 @@ version 15
                 sort xx_wave_int xx_sorting
                 lab var xx_wave "Domain"
                 
+				gen xx_counter = _n
                         
                 ***** Drawing the Graph
                 gr_setscheme
@@ -358,23 +359,38 @@ version 15
 							}
 						}
                 }
-                *Scatter-Plot (label)
+                *Text-Options (label)
                 *blabel
                 if "`blabel'" != "" { 
+					local blabeltext
                         if "`blabsize'" == "" {
                                 local blabsize medium
                         }
                         if "`blabformat'"=="" {
                                 local blabformat %9.2g
                         }
-                        if "`blabcolor'"=="" {
+                        if `"`blabcolor'"'=="" {
                                 local blabcolor black
                         }
-						if "`blabangle'"=="" {
-                                local blabangle 0
+						if "`blaborientation'"=="" {
+                                local blaborientation horizontal
                         }
-                        local graphs `"`graphs' (scatter xx_blabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1 , m(none) mlabel(xx_`blabel') mlabpos(0) mlabformat(`blabformat') mlabsize(`blabsize') mlabcolor(`blabcolor') mlabangle(`blabangle')) "'
-                        local graph_n = `graph_n' + 1
+						levelsof xx_mob, local(xx_paths)
+						foreach mob of local xx_paths {
+							levelsof xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1, local(xx_waves)
+							foreach w of local xx_waves {
+								sum xx_counter if xx_mob == `mob' & bar == 1 & xx_wave == `w' 
+								local pos = `r(mean)'
+								if "`blabel'" == "vallabel" {
+									local blab: dis `blabformat' `=xx_`blabel'[`pos']'
+								}
+								if "`blabel'" == "catlabel" {
+									local blab `"`=xx_`blabel'[`pos']'"'
+								}
+								local text `"text(`=xx_blabpos[`pos']' `w' "`blab'", orientation(`blaborientation') color(`blabcolor') size(`blabsize'))"'
+								local blabeltext `blabeltext' `text'
+							}
+						}
                 }
                 *flowlabel
                 if "`flowlabel'" != "" { 
@@ -384,7 +400,7 @@ version 15
                         if "`flowlabformat'"=="" {
                                 local flowlabformat %9.2g
                         }
-                        if "`flowlabcolor'"=="" {
+                        if `"`flowlabcolor'"'=="" {
                                 local flowlabcolor black
                         }
                         if "`flowlabel'" == "left" {
@@ -393,10 +409,10 @@ version 15
                         if "`flowlabel'" == "right" {
                                 local mlabpos "left"
                         }
-						if "`flowlabangle'"=="" {
-                                local flowlabangle 0
+						if "`flowlaborientation'"=="" {
+                                local flowlaborientation horizontal
                         }
-                        local graphs `"`graphs' (scatter xx_flowlabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar != 1, m(none) mlabel(xx_flowlab) mlabpos(`mlabpos') mlabformat(`flowlabformat') mlabsize(`flowlabsize') mlabcolor(`flowlabcolor') mlabangle(`flowlabangle')) "'
+                        local graphs `"`graphs' (scatter xx_flowlabpos xx_wave if (xx_start == 1 | xx_end == 1) & bar != 1, m(none) mlabel(xx_flowlab) mlabpos(`mlabpos') mlabformat(`flowlabformat') mlabsize(`flowlabsize') mlabcolor(`flowlabcolor') mlabangle(`flowlaborientation')) "'
                         local graph_n = `graph_n' + 1
                 }
                 
@@ -408,19 +424,20 @@ version 15
                 
 				*Legend (check if order is specified or not)
 				if `"`legend'"' == "" {
-					twoway `graphs', `options' legend(order(`legendlab')) 
+					twoway `graphs', `options' legend(order(`legendlab')) `blabeltext'
 				}
-				if ustrregexm(`"`legend'"', "order\(") == 0 {
-					twoway `graphs', `options' legend(`legend' order(`legendlab'))
+				else {
+					if ustrregexm(`"`legend'"', "order\(") == 0 {
+						twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext'
+					}
+					if ustrregexm(`"`legend'"', "order\(") == 1 {
+						twoway `graphs', `options' legend(`legend')  `blabeltext'
+					}
+					if ustrregexm(`"`legend'"', "label\(") == 1 {
+						noisily: dis as text `"(note:  legend(label()) option is not applied; use legend(order(# "text")) instead)"'
+					}	
 				}
-				if ustrregexm(`"`legend'"', "order\(") == 1 {
-					twoway `graphs', `options' legend(`legend')
-				}
-				if ustrregexm(`"`legend'"', "label\(") == 1 {
-					noisily: dis as text `"(note:  legend(label()) option is not applied; use legend(order(# "text")) instead)"'
-				}	
-				
-                restore
+			restore
         }
 
 end

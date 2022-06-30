@@ -26,7 +26,7 @@ help for {hi:sankeyplot}
    {cmd:sankeyplot} {var} {it:clustervar} {it:domainvar} {ifin} {cmd:, long} [{help sankeyplot##comopt:{it:options}}]
 
 
-{synoptset 30 tabbed}{...}
+{synoptset 37 tabbed}{...}
 {synopthdr}
 {synoptline}
 {syntab :Options}
@@ -44,15 +44,15 @@ help for {hi:sankeyplot}
      {it:Bar labels}
 {synopt :{cmdab:blabel(vallabel|catlabel)}}adds labels to bars{p_end}{...}
 {synopt :{cmdab:blabsize(}{help textsizestyle}{cmdab:)}}barlabels: size of text{p_end}{...}
-{synopt :{cmdab:blabcolor(}{help colorstyle}{cmdab:)}}barlabels: color and opacity of text{p_end}{...}
-{synopt :{cmdab:blabangle(}{help anglestyle}list{cmd:)}}barlabels: angle of label {p_end}{...}
+{synopt :{cmdab:blabcol:or(}{help colorstyle}{cmdab:)}}barlabels: color and opacity of text{p_end}{...}
+{synopt :{cmdab:blaborient:ation(}{help orientationstyle}{cmd:)}}barlabels: orientation of label {p_end}{...}
 {synopt :{cmdab:blabformat(}{help %fmt}{cmd:)}}barlabels: format label values per %fmt{p_end}{...}
 
      {it:Flow labels}
 {synopt :{cmdab:flowlabel(left|right)}}adds labels to flows{p_end}{...}
 {synopt :{cmdab:flowlabsize(}{help textsizestyle}{cmdab:)}}flowlabels: size of text{p_end}{...}
-{synopt :{cmdab:flowlabcolor(}{help colorstyle}{cmdab:)}}flowlabels: color and opacity of text{p_end}{...}
-{synopt :{cmdab:flowlabangle(}{help anglestyle}list{cmd:)}}flowlabels: angle of label {p_end}{...}
+{synopt :{cmdab:flowlabcol:or(}{help colorstyle}{cmdab:)}}flowlabels: color and opacity of text{p_end}{...}
+{synopt :{cmdab:flowlaborient:ation(}{help orientationstyle}{cmd:)}}flowlabels: orientation of label {p_end}{...}
 {synopt :{cmdab:flowlabformat(}{help %fmt}{cmd:)}}flowlabels: format label values per %fmt{p_end}{...}
 
 {synopt :{it:twoway_options}}Any options documented in  {manhelpi twoway_options G-3}{p_end}{...}
@@ -111,12 +111,12 @@ Altough it is most common to visualize flows among variables with the same set o
 {phang}
 {cmd:blabel(vallabel|catlabel)} adds either value-labels or the labels of the plotted categories to all bars. If {cmd:vallabel} and {cmd:percent} are specified, relative frequencies are presented in the bars; otherwise {cmd:vallabel} shows absolute frequencies. 
 {break}
-{cmd:blabformat({it:%fmt})}, {cmd:blabsize({it:textsizestyle})}, {cmd:blabangle({it:anglestyle})}, and {cmd:blabcolor({it:colorstyle})} specify details about how the bar labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
+{cmd:blabformat({it:%fmt})}, {cmd:blabsize({it:textsizestyle})}, {cmd:blaborientation({it:orientationstyle})}, and {cmd:blabcolor({it:colorstyle})} specify details about how the bar labels are presented. See {help format}, {manhelpi textsizestyle G-4}, {help orientationstyle}, and {manhelpi colorstyle G-4}.
 
 {phang}
 {cmd:flowlabel(left|right)} adds value-labels at the start or end of all flows. If {cmd:flowlabel()} and {cmd:percent} are specified, relative frequencies are presented in the flows; otherwise {cmd:flowlabel()} shows absolute frequencies. 
 {break}
-{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, {cmd:flowlabangle({it:anglestyle})} and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, and {manhelpi colorstyle G-4}.
+{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, {cmd:flowlaborientation({it:orientationstyle})} and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, {help orientationstyle}, and {manhelpi colorstyle G-4}.
 
 {phang}
 {it:twoway_options} allows for the inclusion of any additional {help twoway_options:graphing options} such as titles, axes, added lines, etc.
@@ -146,7 +146,7 @@ Altough it is most common to visualize flows among variables with the same set o
 {phang2}{cmd:. 	title("Educational Mobility Across Generations") }{p_end}
 
 {pstd}Highlighting the stream in the middle {p_end}
-{phang2}{cmd:. {stata "sankeyplot edu_0 edu_1, flowcol(gs12%80 maroon gs12%80)"}}{p_end}
+{phang2}{cmd:. {stata "sankeyplot edu_0 edu_1, flowcol(none maroon none)"}}{p_end}
 
 {pstd}Plotting more than two variables {p_end}
 {phang2}{cmd:. {stata "sankeyplot edu_0 edu_1 edu_2"}}{p_end}
