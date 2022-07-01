@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.0 16june2022}{...}
+{* *! version 1.1 01july2022}{...}
 {vieweralsosee "[G] graphics" "mansection G graphics"}{...}
 {vieweralsosee "" "--"}{...}
 {viewerjumpto "Syntax" "sankeyplot##syntax"}{...}
