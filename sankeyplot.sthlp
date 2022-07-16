@@ -1,5 +1,8 @@
 {smcl}
-{* *! version 1.1 01july2022}{...}
+{* *! version 1.0   16june2022  Maik Hamjediers}{...}
+{* *! version 1.1   01july2022  Maik Hamjediers}{...}
+{* *! version 1.11  16july2022  Maik Hamjediers}{...}
+
 {vieweralsosee "[G] graphics" "mansection G graphics"}{...}
 {vieweralsosee "" "--"}{...}
 {viewerjumpto "Syntax" "sankeyplot##syntax"}{...}
@@ -43,10 +46,8 @@ help for {hi:sankeyplot}
 
      {it:Bar labels}
 {synopt :{cmdab:blabel(vallabel|catlabel)}}adds labels to bars{p_end}{...}
-{synopt :{cmdab:blabsize(}{help textsizestyle}{cmdab:)}}barlabels: size of text{p_end}{...}
-{synopt :{cmdab:blabcol:or(}{help colorstyle}{cmdab:)}}barlabels: color and opacity of text{p_end}{...}
-{synopt :{cmdab:blaborient:ation(}{help orientationstyle}{cmd:)}}barlabels: orientation of label {p_end}{...}
 {synopt :{cmdab:blabformat(}{help %fmt}{cmd:)}}barlabels: format label values per %fmt{p_end}{...}
+{synopt :{cmdab:blabopt:ions(}{help textbox_options}{cmd:)}}barlabels: look of barlabels{p_end}{...}
 
      {it:Flow labels}
 {synopt :{cmdab:flowlabel(left|right)}}adds labels to flows{p_end}{...}
@@ -111,7 +112,7 @@ Altough it is most common to visualize flows among variables with the same set o
 {phang}
 {cmd:blabel(vallabel|catlabel)} adds either value-labels or the labels of the plotted categories to all bars. If {cmd:vallabel} and {cmd:percent} are specified, relative frequencies are presented in the bars; otherwise {cmd:vallabel} shows absolute frequencies. 
 {break}
-{cmd:blabformat({it:%fmt})}, {cmd:blabsize({it:textsizestyle})}, {cmd:blaborientation({it:orientationstyle})}, and {cmd:blabcolor({it:colorstyle})} specify details about how the bar labels are presented. See {help format}, {manhelpi textsizestyle G-4}, {help orientationstyle}, and {manhelpi colorstyle G-4}.
+{cmd:blaboptions({it:textbox_options})} allows to specify details about how the bar labels are presented via any options listed under {help textbox_options}.
 
 {phang}
 {cmd:flowlabel(left|right)} adds value-labels at the start or end of all flows. If {cmd:flowlabel()} and {cmd:percent} are specified, relative frequencies are presented in the flows; otherwise {cmd:flowlabel()} shows absolute frequencies. 
