@@ -373,15 +373,17 @@ version 15
 						levelsof xx_wave if (xx_start == 1 | xx_end == 1) & bar == 1, local(xx_waves)
 						foreach w of local xx_waves {
 							sum xx_counter if xx_mob == `mob' & bar == 1 & xx_wave == `w' 
-							local pos = `r(mean)'
-							if "`blabel'" == "vallabel" {
-								local blab: dis `blabformat' `=xx_`blabel'[`pos']'
+							if `r(N)' != 0 {
+								local pos = `r(mean)'
+								if "`blabel'" == "vallabel" {
+									local blab: dis `blabformat' `=xx_`blabel'[`pos']'
+								}
+								if "`blabel'" == "catlabel" {
+									local blab `"`=xx_`blabel'[`pos']'"'
+								}
+								local text `"text(`=xx_blabpos[`pos']' `w' "`blab'", `blaboptions')"'
+								local blabeltext `blabeltext' `text'
 							}
-							if "`blabel'" == "catlabel" {
-								local blab `"`=xx_`blabel'[`pos']'"'
-							}
-							local text `"text(`=xx_blabpos[`pos']' `w' "`blab'", `blaboptions')"'
-							local blabeltext `blabeltext' `text'
 						}
 					}
                 }
@@ -417,18 +419,22 @@ version 15
                 
 				*Legend (check if order is specified or not)
 				if `"`legend'"' == "" {
-					twoway `graphs', `options' legend(order(`legendlab')) `blabeltext' `fl		}
+						twoway `graphs', `options' legend(order(`legendlab')) `blabeltext' `flowlabel'		
+					}
 				else {
 					if ustrregexm(`"`legend'"', "order\(") == 0 {
-						twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' `fl			}
+							twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' `flowlabel'			
+						}
 					if ustrregexm(`"`legend'"', "order\(") == 1 {
-						twoway `graphs', `options' legend(`legend')  `blabeltext' `fl			}
+							twoway `graphs', `options' legend(`legend')  `blabeltext' `flowlabel'			
+						}
 					if ustrregexm(`"`legend'"', "label\(") == 1 {
-						noisily: dis as text `"(note:  legend(label()) option is not applied; use legend(order(# "text")) instead)"'
+						noisily: dis as text `"note:  legend(label()) option is not applied; use legend(order(# "text")) instead"'
 					}	
 				}
 			restore
         }
+		
 
 end
 
