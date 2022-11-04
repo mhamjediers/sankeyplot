@@ -419,14 +419,14 @@ version 15
                 
 				*Legend (check if order is specified or not)
 				if `"`legend'"' == "" {
-						twoway `graphs', `options' legend(order(`legendlab')) `blabeltext' `flowlabel'		
+						twoway `graphs', `options' legend(order(`legendlab')) `blabeltext' 
 					}
 				else {
 					if ustrregexm(`"`legend'"', "order\(") == 0 {
-							twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' `flowlabel'			
+							twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' 
 						}
 					if ustrregexm(`"`legend'"', "order\(") == 1 {
-							twoway `graphs', `options' legend(`legend')  `blabeltext' `flowlabel'			
+							twoway `graphs', `options' legend(`legend')  `blabeltext' 
 						}
 					if ustrregexm(`"`legend'"', "label\(") == 1 {
 						noisily: dis as text `"note:  legend(label()) option is not applied; use legend(order(# "text")) instead"'
