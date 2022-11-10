@@ -1,6 +1,7 @@
 *! version 1.0   16june2022  Maik Hamjediers
 *! version 1.1   01july2022  Maik Hamjediers
 *! version 1.11  16july2022  Maik Hamjediers
+*! version 1.2	 10nove2022  Maik Hamjediers
 
 cap program drop sankeyplot
 program define sankeyplot
@@ -381,7 +382,7 @@ version 15
 								if "`blabel'" == "catlabel" {
 									local blab `"`=xx_`blabel'[`pos']'"'
 								}
-								local text `"text(`=xx_blabpos[`pos']' `w' "`blab'", `blaboptions')"'
+								local text `"text(`=xx_blabpos[`pos']' `w' "`blab'", place(0) `blaboptions')"'
 								local blabeltext `blabeltext' `text'
 							}
 						}

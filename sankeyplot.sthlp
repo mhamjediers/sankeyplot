@@ -2,6 +2,7 @@
 {* *! version 1.0   16june2022  Maik Hamjediers}{...}
 {* *! version 1.1   01july2022  Maik Hamjediers}{...}
 {* *! version 1.11  16july2022  Maik Hamjediers}{...}
+{* *! version 1.2	10nove2022  Maik Hamjediers}{...}
 
 {vieweralsosee "[G] graphics" "mansection G graphics"}{...}
 {vieweralsosee "" "--"}{...}
