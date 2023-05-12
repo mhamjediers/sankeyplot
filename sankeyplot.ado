@@ -306,8 +306,9 @@ version 15
                 levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
                         gettoken col colors:colors, 
-						if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-							local col "`col'%`opacity'"
+						if ustrregexm("`col'","\%\d{1,3}") == 0 ///
+							& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+								local col "`col'%`opacity'"
 						}
 						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 							tokenize `col'
@@ -329,8 +330,9 @@ version 15
 				levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
                     gettoken col copy_colors:copy_colors, 
-					if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-						local col "`col'%`opacity'"
+					if ustrregexm("`col'","\%\d{1,3}") == 0 ///
+						& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+							local col "`col'%`opacity'"
 					}
 					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 						tokenize `col'
@@ -345,8 +347,9 @@ version 15
                 foreach mob of local xx_paths {
                         gettoken col flowcolors:flowcolors, 
 						if "`col'" != "none" {
-							if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-								local col "`col'%`opacity'"
+							if ustrregexm("`col'","\%\d{1,3}") == 0 ///
+								& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+									local col "`col'%`opacity'"
 							}
 							if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 								tokenize `col'
