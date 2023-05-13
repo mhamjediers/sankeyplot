@@ -139,15 +139,21 @@ version 15
                                         gen xx_n = _n
                                         bys xx_mob`w' : egen xx_blabpos`w' = mean(xx_n)
                                         *Value label
-                                        bys xx_mob`w' : gen xx_vallabel`w' = _N
+										bys xx_mob`w' : gen xx_vallabel`w' = _N
                                         *Category label
                                         gen xx_catlabel`w' = ""
-                                        levelsof xx_mob`w', local(xx_paths)
-                                        local xx_lbe : value label xx_mob`w'
-                                        foreach mob of local xx_paths {
-                                                local labtext`mob' : label `xx_lbe' `mob'
-                                                replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
-                                        }
+										if "`blabel'" == "catlabel" {
+											levelsof xx_mob`w', local(xx_paths)
+											local xx_lbe : value label xx_mob`w'
+											if "`xx_lbe'" == "" {
+												dis in red "No value label for variables found to plot as catlabel"
+												error 182 
+											}
+											foreach mob of local xx_paths {
+													local labtext`mob' : label `xx_lbe' `mob'
+													replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
+											}
+										}
                                         drop xx_n
                                 }
                                         local blabel_vars xx_blabpos xx_vallabel xx_catlabel
