@@ -273,10 +273,13 @@ version 15
                 				
                 *Color-Local
 				local n_col : list sizeof local(colors)
-                local n_col = `n_col' + 1
                 levelsof xx_mob
-                foreach c of numlist `n_col' (1) `r(r)' {
+				local n_path = `r(r)'
+				local c = 1
+                while `n_col' < `n_path' { // filling up, if too few specified
                         local colors = `"`colors' `.__SCHEME.color.p`c''"'
+						local n_col = `n_col' + 1
+						local c = `c' + 1
                 }
 
                 if `"`flowcolors'"' != "" { // filling up, if not enough specified
@@ -307,11 +310,11 @@ version 15
                 
                 local graph_n = 0
                 local graphs ""
-				local copy_colors `colors'
+				local copy_colors = `"`colors'"'
 				*Starting-Bars (guiding the legend)
                 levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
-                        gettoken col colors:colors, 
+                        gettoken col copy_colors:copy_colors, 
 						if ustrregexm("`col'","\%\d{1,3}") == 0 ///
 							& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
 								local col "`col'%`opacity'"
@@ -335,15 +338,15 @@ version 15
 				*End-Bars
 				levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
-                    gettoken col copy_colors:copy_colors, 
+                    gettoken col colors:colors, 
 					if ustrregexm("`col'","\%\d{1,3}") == 0 ///
-						& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-							local col "`col'%`opacity'"
-					}
-					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-						tokenize `col'
-						local col `""`1' `2' `3'%`opacity'""'
-					}
+							& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+								local col "`col'%`opacity'"
+						}
+						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
+							tokenize `col'
+							local col `""`1' `2' `3'%`opacity'""'
+						}
 					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
                     local graph_n = `graph_n' + 1
 				}
