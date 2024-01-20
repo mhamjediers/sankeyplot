@@ -2,6 +2,7 @@
 *! version 1.1   01july2022  Maik Hamjediers
 *! version 1.11  16july2022  Maik Hamjediers
 *! version 1.2	 10nove2022  Maik Hamjediers
+*! version 1.21	 21janu2024  Maik Hamjediers
 
 cap program drop sankeyplot
 program define sankeyplot
@@ -19,7 +20,7 @@ version 15
         BLABEL(string) BLABFORMAT(string asis) BLABOPTions(string asis)
         FLOWLABEL(string) FLOWLABSIZE(string) FLOWLABFORMAT(string asis) FLOWLABCOLor(string asis) FLOWLABORIENTation(string asis) 
         FLOWOPTions(string asis) BAROPTions(string asis)
-		LEGend(string asis)
+		LEGEND(string asis)
         ]
         ;
     #delimit cr
@@ -139,21 +140,15 @@ version 15
                                         gen xx_n = _n
                                         bys xx_mob`w' : egen xx_blabpos`w' = mean(xx_n)
                                         *Value label
-										bys xx_mob`w' : gen xx_vallabel`w' = _N
+                                        bys xx_mob`w' : gen xx_vallabel`w' = _N
                                         *Category label
                                         gen xx_catlabel`w' = ""
-										if "`blabel'" == "catlabel" {
-											levelsof xx_mob`w', local(xx_paths)
-											local xx_lbe : value label xx_mob`w'
-											if "`xx_lbe'" == "" {
-												dis in red "No value label for variables found to plot as catlabel"
-												error 182 
-											}
-											foreach mob of local xx_paths {
-													local labtext`mob' : label `xx_lbe' `mob'
-													replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
-											}
-										}
+                                        levelsof xx_mob`w', local(xx_paths)
+                                        local xx_lbe : value label xx_mob`w'
+                                        foreach mob of local xx_paths {
+                                                local labtext`mob' : label `xx_lbe' `mob'
+                                                replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
+                                        }
                                         drop xx_n
                                 }
                                         local blabel_vars xx_blabpos xx_vallabel xx_catlabel
@@ -273,13 +268,10 @@ version 15
                 				
                 *Color-Local
 				local n_col : list sizeof local(colors)
+                local n_col = `n_col' + 1
                 levelsof xx_mob
-				local n_path = `r(r)'
-				local c = 1
-                while `n_col' < `n_path' { // filling up, if too few specified
+                foreach c of numlist `n_col' (1) `r(r)' {
                         local colors = `"`colors' `.__SCHEME.color.p`c''"'
-						local n_col = `n_col' + 1
-						local c = `c' + 1
                 }
 
                 if `"`flowcolors'"' != "" { // filling up, if not enough specified
@@ -310,14 +302,13 @@ version 15
                 
                 local graph_n = 0
                 local graphs ""
-				local copy_colors = `"`colors'"'
+				local copy_colors `colors'
 				*Starting-Bars (guiding the legend)
                 levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
-                        gettoken col copy_colors:copy_colors, 
-						if ustrregexm("`col'","\%\d{1,3}") == 0 ///
-							& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-								local col "`col'%`opacity'"
+                        gettoken col colors:colors, 
+						if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+							local col "`col'%`opacity'"
 						}
 						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 							tokenize `col'
@@ -338,15 +329,14 @@ version 15
 				*End-Bars
 				levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
-                    gettoken col colors:colors, 
-					if ustrregexm("`col'","\%\d{1,3}") == 0 ///
-							& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-								local col "`col'%`opacity'"
-						}
-						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-							tokenize `col'
-							local col `""`1' `2' `3'%`opacity'""'
-						}
+                    gettoken col copy_colors:copy_colors, 
+					if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+						local col "`col'%`opacity'"
+					}
+					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
+						tokenize `col'
+						local col `""`1' `2' `3'%`opacity'""'
+					}
 					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
                     local graph_n = `graph_n' + 1
 				}
@@ -356,9 +346,8 @@ version 15
                 foreach mob of local xx_paths {
                         gettoken col flowcolors:flowcolors, 
 						if "`col'" != "none" {
-							if ustrregexm("`col'","\%\d{1,3}") == 0 ///
-								& ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-									local col "`col'%`opacity'"
+							if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
+								local col "`col'%`opacity'"
 							}
 							if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
 								tokenize `col'
@@ -425,7 +414,7 @@ version 15
                 }
             
                 *xlabel
-                if ustrregexm(`"`options'"', "xlabel") == 0 {
+                if ustrregexm(`"`options'"', "xlab") == 0  {
                         levelsof xx_wave if bar == 1, local(xlabel)
                         local options `options' xlabel(`xlabel')
                 }

@@ -3,14 +3,13 @@
 {* *! version 1.1   01july2022  Maik Hamjediers}{...}
 {* *! version 1.11  16july2022  Maik Hamjediers}{...}
 {* *! version 1.2	10nove2022  Maik Hamjediers}{...}
-
+{* *! version 1.21	21janu2024  Maik Hamjediers}{...}
 {vieweralsosee "[G] graphics" "mansection G graphics"}{...}
 {vieweralsosee "" "--"}{...}
 {viewerjumpto "Syntax" "sankeyplot##syntax"}{...}
 {viewerjumpto "Description" "sankeyplot##description"}{...}
 {viewerjumpto "Options" "sankeyplot##comopt"}{...}
 {viewerjumpto "Examples" "sankeyplot##examples"}{...}
-
 
 {hline}
 help for {hi:sankeyplot}
