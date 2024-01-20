@@ -8,7 +8,7 @@ cap program drop sankeyplot
 program define sankeyplot
 version 15
         #delimit ;
-        syntax varlist(min=2 numeric) [if] [in] , 
+        syntax varlist(min=2 numeric) [if] [in] [fweight iweight pweight/] , 
         [PERCent 
 		Points(integer 10)
         MISSing
@@ -54,9 +54,9 @@ version 15
                 }       
                 if "`in'" != "" {
                         keep `in'
-                }       
+                }
                 
-                keep `varlist'
+                keep `varlist' `exp'
                 
                 *Check if three variables are definied when using the option long
                 local n_vars : list sizeof local(varlist)
@@ -68,10 +68,25 @@ version 15
                 }
                 if "`long'" != "" & `n_vars' == 3 {
                         tokenize `varlist' 
-                        reshape wide `1', i(`2') j(`3')
-                        unab varlist: _all
+                        cap reshape wide `1', i(`2') j(`3')
+						if _rc != 0 {
+							display in red "Your weighting variable `exp' seems to be not constant within `2'."
+							display in red "Frequency weights are only allowed if they are the same for each level of `2'."
+							error 9
+						}	
+						display in red "`varlist'"
                         local varlist: list varlist - 2
+						local varlist: list varlist - exp
                 }
+				
+				*Check for weights and create weight of 1 if not specified
+				if "`weight'" == "" {
+					gen xx_weight = 1
+				}
+				if "`weight'" != "" {
+					gen xx_weight = `exp'
+				}
+				
                 
                 *Check how many levels of categorical variables
                 if "`force'" == "" {
@@ -82,6 +97,7 @@ version 15
                                         dis in red "Variable `1' has more than 7 distinct levels, which undermines the readability of the graph."
                                         dis in red "If you want to use this variable, specify force-option; generating the graph might take long"
 										dis as red "(alternatively, you may have forgotten to specify the long-option)"
+										dis " "
                                         error 134
                                 }
                         }
@@ -92,6 +108,7 @@ version 15
                                                 dis in red "Variable `v' has more than 7 distinct levels, which undermines the readability of the graph."
                                                 dis in red "If you want to use this variable, specify force-option; generating the graph might take long"
 												dis as red "(alternatively, you may have forgotten to specify the long-option)"
+												dis " "
                                                 error 134
                                         }
                                 }
@@ -127,7 +144,7 @@ version 15
                         gettoken s  : varlist
                         clonevar xx_mob1 = `s'
                         
-                        bys xx_mob0 xx_mob1: gen xx_obs = _N
+                        bys xx_mob0 xx_mob1: egen xx_obs = total(xx_weight)
                         
                         if "`blabel'" != "" {
                                 *check if either catlabel or vallabel
@@ -136,12 +153,20 @@ version 15
                                         error 198
                                 }
                                 foreach w of num 0 1 {
-                                        sort xx_mob`w'
-                                        gen xx_n = _n
-                                        bys xx_mob`w' : egen xx_blabpos`w' = mean(xx_n)
-                                        *Value label
-                                        bys xx_mob`w' : gen xx_vallabel`w' = _N
-                                        *Category label
+										*Value label
+                                        bys xx_mob`w' : egen xx_vallabel`w' = total(xx_weight)
+										
+										*Blabel position
+										gen xx_blabpos`w' = .
+										local sum = 0
+										levelsof xx_mob`w', local(levs)
+										foreach l of local levs {
+											sum xx_vallabel`w' if xx_mob`w' == `l'
+											replace xx_blabpos`w' = `sum' + `r(mean)' / 2 if xx_mob`w' == `l'
+											local sum = `sum' + `r(mean)'
+										}
+                                        
+										*Category label
                                         gen xx_catlabel`w' = ""
                                         levelsof xx_mob`w', local(xx_paths)
                                         local xx_lbe : value label xx_mob`w'
@@ -149,7 +174,6 @@ version 15
                                                 local labtext`mob' : label `xx_lbe' `mob'
                                                 replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
                                         }
-                                        drop xx_n
                                 }
                                         local blabel_vars xx_blabpos xx_vallabel xx_catlabel
                         }
@@ -181,7 +205,7 @@ version 15
                         replace xx_grpl1 = xx_grpl1 + xx_grp1[_n-1] if xx_grp1[_n-1] != . //from
 
                         gen xx_grpid = _n //id of each stream
-
+						
                         reshape long xx_mob xx_grp xx_grpl `blabel_vars', i(xx_grpid) j(xx_wave)
                         *Cleaning
                         drop xx_obs

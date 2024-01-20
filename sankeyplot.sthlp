@@ -22,11 +22,11 @@ help for {hi:sankeyplot}
 {marker:syntax}{...}
 {title:Syntax}
 
-   {cmd:sankeyplot} {varlist} {ifin} [{cmd:,} {help sankeyplot##comopt:{it:options}}]
+   {cmd:sankeyplot} {varlist} {ifin} {weight} [{cmd:,} {help sankeyplot##comopt:{it:options}}]
 
    If data is in long format:
 
-   {cmd:sankeyplot} {var} {it:clustervar} {it:domainvar} {ifin} {cmd:, long} [{help sankeyplot##comopt:{it:options}}]
+   {cmd:sankeyplot} {var} {it:clustervar} {it:domainvar} {ifin} {weight} {cmd:, long} [{help sankeyplot##comopt:{it:options}}]
 
 
 {synoptset 37 tabbed}{...}
@@ -59,6 +59,8 @@ help for {hi:sankeyplot}
 {synopt :{it:twoway_options}}Any options documented in  {manhelpi twoway_options G-3}{p_end}{...}
 
 {synoptline}
+{phang}{it:fweights}, {it:pweights}, and {it:iweights} are allowed.{p_end}
+
 {p2colreset}
 
 {marker description}{...}
@@ -112,12 +114,12 @@ Altough it is most common to visualize flows among variables with the same set o
 {phang}
 {cmd:blabel(vallabel|catlabel)} adds either value-labels or the labels of the plotted categories to all bars. If {cmd:vallabel} and {cmd:percent} are specified, relative frequencies are presented in the bars; otherwise {cmd:vallabel} shows absolute frequencies. 
 {break}
-{cmd:blaboptions({it:textbox_options})} allows to specify details about how the bar labels are presented via any options listed under {help textbox_options}.
+{cmd:blaboptions({it:textbox_options})} allows to specify details about how the bar labels are presented via any options listed under {help textbox_options}. Note that the default format for the value-labels is %9.2g, which may shifts numbers with fewer digits to the right; specifying a different format can be required.
 
 {phang}
 {cmd:flowlabel(left|right)} adds value-labels at the start or end of all flows. If {cmd:flowlabel()} and {cmd:percent} are specified, relative frequencies are presented in the flows; otherwise {cmd:flowlabel()} shows absolute frequencies. 
 {break}
-{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, {cmd:flowlaborientation({it:orientationstyle})} and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, {help orientationstyle}, and {manhelpi colorstyle G-4}.
+{cmd:flowlabformat({it:%fmt})}, {cmd:flowlabsize({it:textsizestyle})}, {cmd:flowlaborientation({it:orientationstyle})} and {cmd:flowlabcolor({it:colorstyle})} specify details about how the flow labels are presented. See {help format}, {manhelpi textsizestyle G-4}, {help orientationstyle}, and {manhelpi colorstyle G-4}. Note that the default format for the value-labels is %9.2g, which may shifts numbers with fewer digits to the right; specifying a different format can be required.
 
 {phang}
 {it:twoway_options} allows for the inclusion of any additional {help twoway_options:graphing options} such as titles, axes, added lines, etc.
