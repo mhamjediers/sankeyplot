@@ -1,0 +1,15 @@
+v 1.21
+d 'sankeyplot': module to create Sankey digramms
+d 
+d Distribution-Date:   202401
+d License: MIT
+d
+d Maik Hamjediers
+d Humboldt Universität zu Berlin
+d maik.hamjediers@hu-berlin.de
+d
+d https://github.com/mhamjediers/sankeyplot
+d 
+F sankeyplot.ado
+F sankeyplot.sthlp
+F sankeyplot_eg.ado

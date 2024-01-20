@@ -1,0 +1,11 @@
+v 1.21
+d
+d Maik Hamjediers
+d Humboldt Universität zu Berlin
+d maik.hamjediers@hu-berlin.de
+d
+d https://github.com/mhamjediers/sankeyplot
+
+d 'sankeyplot': module to create Sankey digramms
+
+p sankeyplot

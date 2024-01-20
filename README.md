@@ -1,14 +1,19 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/mhamjediers/sankeyplot) ![license](https://img.shields.io/github/license/mhamjediers/sankeyplot) ![Stars](https://img.shields.io/github/stars/mhamjediers/sankeyplot) ![version](https://img.shields.io/github/v/release/mhamjediers/sankeyplot) 
 
-## sankeyplot, version 1.2
+## sankeyplot, version 1.21
 
 Stata module to create Sankey digramms
 
-Available on the Statistical Software Components (SSC). 
-To download and install the module in Stata type:
+To download and install the module from the Statistical Software Components (SSC):
 ```bash
 ssc install sankeyplot
 ```
+
+Alternatively install current version from GitHub (GitHub files might contain latest updates that have not been currently pushed to SSC):
+```bash
+net install sankeyplot, from("https://raw.githubusercontent.com/mhamjediers/sankeyplot/master/")
+```
+
 
 ### Suggested citation:
 Hamjediers, M. (2022): SANKEYPLOT: Stata module to produce Sankey diagramms. [Statistical Software Components S459089](https://econpapers.repec.org/software/bocbocode/S459089.htm), Boston College Department of Economics.
