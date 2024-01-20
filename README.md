@@ -4,13 +4,14 @@
 
 Stata module to create Sankey digramms
 
-Available on the Statistical Software Components (SSC). To download and install the module in Stata type:
+Available on the Statistical Software Components (SSC). 
+To download and install the module in Stata type:
 ```bash
 ssc install sankeyplot
 ```
 
-Suggested citation:
-Hamjediers, M. (2022): SANKEYPLOT: Stata module to produce Sankey diagramms. [https://econpapers.repec.org/software/bocbocode/S459089.htm](Statistical Software Components S459089), Boston College Department of Economics.
+### Suggested citation:
+Hamjediers, M. (2022): SANKEYPLOT: Stata module to produce Sankey diagramms. [Statistical Software Components S459089](https://econpapers.repec.org/software/bocbocode/S459089.htm), Boston College Department of Economics.
 
 
 ## Description
@@ -22,7 +23,7 @@ If the data that should be plotted is in a long format (obsverations represent d
 
 Altough it is most common to visualize flows among variables with the same set of values, specifying two different set of values is also possible. Yet, note that the legend and colors will be based on the variable mentioned in varlist. If two different variables are used it is recommended to use the options blabel(catlabel) and legend(off).
 
-##Exemplary graphs
+## Exemplary graphs
 
 <img src="https://user-images.githubusercontent.com/36712245/174764980-baf5a813-1e35-4eb6-8f36-668882c37869.png"  width="600" height="400" />
 <img src="https://user-images.githubusercontent.com/36712245/174764999-9adb189d-e441-4534-afff-5df9d2a89d67.png"  width="600" height="342" />
