@@ -57,7 +57,7 @@ version 15
                 }
                 
                 keep `varlist' `exp'
-                
+				
                 *Check if three variables are definied when using the option long
                 local n_vars : list sizeof local(varlist)
                 if "`long'" != "" & `n_vars' < 3 {
@@ -74,9 +74,12 @@ version 15
 							display in red "Frequency weights are only allowed if they are the same for each level of `2'."
 							error 9
 						}	
-						display in red "`varlist'"
-                        local varlist: list varlist - 2
-						local varlist: list varlist - exp
+						
+						local varlist ""
+						foreach v of varlist `1'* {
+							local varlist `varlist' `v'
+						}
+                       
                 }
 				
 				*Check for weights and create weight of 1 if not specified
