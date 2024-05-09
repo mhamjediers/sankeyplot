@@ -148,7 +148,7 @@ version 15
                         clonevar xx_mob1 = `s'
                         
                         bys xx_mob0 xx_mob1: egen xx_obs = total(xx_weight)
-                        
+						
                         if "`blabel'" != "" {
                                 *check if either catlabel or vallabel
                                 if "`blabel'" != "catlabel" & "`blabel'" != "vallabel" {
@@ -173,10 +173,12 @@ version 15
                                         gen xx_catlabel`w' = ""
                                         levelsof xx_mob`w', local(xx_paths)
                                         local xx_lbe : value label xx_mob`w'
-                                        foreach mob of local xx_paths {
-                                                local labtext`mob' : label `xx_lbe' `mob'
-                                                replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
-                                        }
+										if "`xx_lbe'" != "" {
+											foreach mob of local xx_paths {
+													local labtext`mob' : label `xx_lbe' `mob'
+													replace xx_catlabel`w' = `"`labtext`mob''"' if xx_mob`w' == `mob'
+											}
+										}
                                 }
                                         local blabel_vars xx_blabpos xx_vallabel xx_catlabel
                         }
