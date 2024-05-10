@@ -299,17 +299,21 @@ version 15
 				local n_col : list sizeof local(colors)
                 local n_col = `n_col' + 1
                 levelsof xx_mob
-                foreach c of numlist `n_col' (1) `r(r)' {
+				if `n_col' <= `r(r)' {
+					foreach c of numlist `n_col' (1) `r(r)' {
                         local colors = `"`colors' `.__SCHEME.color.p`c''"'
-                }
+					}
+				}
 
                 if `"`flowcolors'"' != "" { // filling up, if not enough specified
                         local n_col : list sizeof local(flowcolors)
                         local n_col = `n_col' + 1
                         levelsof xx_mob
-                        foreach c of numlist `n_col' (1) `r(r)' {
+						if `n_col' <= `r(r)' {
+							foreach c of numlist `n_col' (1) `r(r)' {
                                 local flowcolors = `"`flowcolors' `.__SCHEME.color.p`c''"'
-                        }
+							}
+						}
                 }
                 if `"`flowcolors'"' == "" {
                         local flowcolors "`colors'"
@@ -331,7 +335,7 @@ version 15
                 
                 local graph_n = 0
                 local graphs ""
-				local copy_colors `colors'
+				local copy_colors "`colors'"
 				*Starting-Bars (guiding the legend)
                 levelsof xx_mob, local(xx_paths)
                 foreach mob of local xx_paths {
@@ -339,11 +343,7 @@ version 15
 						if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
 							local col "`col'%`opacity'"
 						}
-						if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-							tokenize `col'
-							local col `""`1' `2' `3'%`opacity'""'
-						}
-						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
+						local graphs `"`graphs' (rbar xx_start_up xx_start_low xx_wave if xx_start == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`"`col'"') `baroptions' ) "'
                         local graph_n = `graph_n' + 1        
 						local xx_lbe : value label xx_mob
 						if "`xx_lbe'" != "" {
@@ -360,13 +360,9 @@ version 15
                 foreach mob of local xx_paths {
                     gettoken col copy_colors:copy_colors, 
 					if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
-						local col "`col'%`opacity'"
-					}
-					if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-						tokenize `col'
-						local col `""`1' `2' `3'%`opacity'""'
-					}
-					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`col') `baroptions' ) "'
+							local col "`col'%`opacity'"
+						}
+					local graphs `"`graphs' (rbar xx_end_up xx_end_low xx_wave if xx_end == 1 & bar == 1 & xx_mob == `mob' , barwidth(`barwidth') color(`"`col'"') `baroptions' ) "'
                     local graph_n = `graph_n' + 1
 				}
 				
@@ -378,15 +374,11 @@ version 15
 							if ustrregexm("`col'","\%\d{1,3}") == 0 { // if opacity is not already definied as color-attribute
 								local col "`col'%`opacity'"
 							}
-							if ustrregexm("`col'","\d{1,3} \d{1,3} \d{1,3}") == 1 { // if rgb-code
-								tokenize `col'
-								local col `""`1' `2' `3'%`opacity'""'
-							}
 							levelsof xx_wave_int, local(xx_waves)
 							foreach w of local xx_waves {
 									levelsof xx_grpid if xx_mob == `mob' & xx_start == 1 & bar == 0 & xx_wave_int == `w', local(xx_graphs2)
 									foreach id of local xx_graphs2 {
-											local graphs `"`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`col') `flowoptions' ) "'
+											local graphs `"`graphs' (rarea xx_diff_up xx_diff_low xx_wave if xx_grpid == `id' & bar == 0 & xx_wave_int == `w', color(`"`col'"') `flowoptions' ) "'
 											local graph_n = `graph_n' + 1
 									}
 							}
@@ -448,13 +440,14 @@ version 15
                         local options `options' xlabel(`xlabel')
                 }
                 
+				
 				*Legend (check if order is specified or not)
 				if `"`legend'"' == "" {
-						twoway `graphs', `options' legend(order(`legendlab')) `blabeltext' 
+						twoway `graphs', `options' legend(order(`"`legendlab'"')) `blabeltext' 
 					}
 				else {
 					if ustrregexm(`"`legend'"', "order\(") == 0 {
-							twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' 
+							twoway `graphs', `options' legend(`legend' order(`legendlab'))  `blabeltext' 		
 						}
 					if ustrregexm(`"`legend'"', "order\(") == 1 {
 							twoway `graphs', `options' legend(`legend')  `blabeltext' 
