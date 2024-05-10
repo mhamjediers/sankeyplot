@@ -185,10 +185,10 @@ version 15
                         
                         
                         if "`percent'" != "" {
-                                count 
-                                replace xx_obs = xx_obs / `r(N)' * 100
+                                sum xx_weight, 	d
+                                replace xx_obs = xx_obs / `r(sum)' * 100
                                 if "`blabel'" != "" {
-                                        for any xx_vallabel0 xx_vallabel1 xx_blabpos1 xx_blabpos0: replace X = X /  `r(N)' * 100
+                                        for any xx_vallabel0 xx_vallabel1 xx_blabpos1 xx_blabpos0: replace X = X /  `r(sum)' * 100
                                 }
                         }
 
